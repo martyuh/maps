@@ -1,7 +1,24 @@
+
+
 //class is used to create an instance of an object
 //the variable in the import statement can be used to type it as well
-import { User } from "./User";
-import { Company } from "./Company";
+//these imports can be removed when you use an interface
+// import { User } from "./User";
+// import { Company } from "./Company";
+
+//instructions on how to be an addMarker argument for the classes
+//every class can reference this interface to determine how to show up on the map. it must have a location property and lat and lng that are numbers, and markerContent function that returns a string
+//this can done by using interfaces
+//export into other files to use as a type
+export interface Mappable{
+    location:{
+        lat:number;
+        lng:number;
+    }
+    // function that has to return a string 
+    markerContent():string
+    color:string;
+}
 
 export class CustomMap {
     //type annotation for the variables
@@ -35,13 +52,14 @@ export class CustomMap {
 
     }
 
-        //receives user which is a User type witha return type of void
+        //receives mappable interface type return type of void
         //pass an instance of a User or | a compnany to the mappable parameter
+        //or better pass an object that satisfies the Mappable interface 
         //typescript analyzes each instance and will allow only shared properties
         //to prevent this, and to prevent having to constantly import classes and listing new parameters for each instance class, you can you an interface
-        addMarker(mappable:User|Company):void{
+        addMarker(mappable:Mappable):void{
             //instance of the marker
-            new google.maps.Marker({
+            const marker = new google.maps.Marker({
                 //markerOptions object map refers to the map that you want the marker on
                 //googleMap is created and assigned to the customMap class
                 map: this.googleMap,
@@ -51,6 +69,18 @@ export class CustomMap {
                     lng: mappable.location.lng
                 }
 
+            });
+
+            //create an info window
+            marker.addListener('click',()=>{
+                const infoWindow = new google.maps.InfoWindow({
+                    //pass in the options object
+                    //in this case the object can have a content property
+                    //call the markercontent method to render the html
+                    content:mappable.markerContent()
+                })
+                //open the indow when the eventlistener is clicked and pass in a reference to the map and the marker
+                infoWindow.open(this.googleMap,marker)
             })
         }
 
