@@ -21,7 +21,7 @@ import faker from 'faker'
          this.name=faker.name.firstName();
          //initialize the location object
          this.location={
-             //parsefloat converts it to a number
+             //parsefloat converts it to a number for these randomly generated lat and lng
              lat:parseFloat(faker.address.latitude()),
             lng:parseFloat(faker.address.longitude())
          }
